@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubTrack — Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060912;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.08);
+    --accent: #6ee7f7;
+    --accent2: #818cf8;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --error: #f87171;
+    --success: #34d399;
+    --input-bg: rgba(255,255,255,0.05);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient orbs */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(110,231,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -20%;
+    right: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(129,140,248,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 44px 40px;
+    width: 100%;
+    max-width: 440px;
+    backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 10;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .logo-text {
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 30px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .form-group:nth-child(1) { animation-delay: 0.05s; }
+  .form-group:nth-child(2) { animation-delay: 0.1s; }
+  .form-group:nth-child(3) { animation-delay: 0.15s; }
+  .form-group:nth-child(4) { animation-delay: 0.2s; }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    opacity: 0.5;
+  }
+
+  input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 13px 14px 13px 40px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.93rem;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: var(--accent);
+    background: rgba(110,231,247,0.05);
+  }
+
+  input.error { border-color: var(--error); }
+  input.valid { border-color: var(--success); }
+
+  .field-error {
+    font-size: 0.75rem;
+    color: var(--error);
+    margin-top: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    display: none;
+  }
+
+  .field-error.show { display: block; }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #060912;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.2s, transform 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .btn-outline {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--accent2);
+    background: rgba(129,140,248,0.06);
+  }
+
+  .success-box {
+    display: none;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .success-box.show { display: block; }
+
+  .success-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+  }
+
+  .success-box h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--success);
+  }
+
+  .success-box p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--glass-border);
+    margin: 24px 0;
+  }
+
+  .login-link {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .login-link a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">🔔</div>
+    <div class="logo-text">SubTrack</div>
+  </div>
+
+  <!-- FORM VIEW -->
+  <div id="formView">
+    <h1>Create Account</h1>
+    <p class="subtitle">Track your subscriptions & never miss a renewal</p>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <div class="input-wrap">
+        <span class="input-icon">👤</span>
+        <input type="text" id="name" placeholder="John Doe">
+      </div>
+      <div class="field-error" id="nameErr">Name is required</div>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <div class="input-wrap">
+        <span class="input-icon">✉️</span>
+        <input type="email" id="email" placeholder="john@example.com">
+      </div>
+      <div class="field-error" id="emailErr">Enter a valid email</div>
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="password" placeholder="Minimum 6 characters">
+      </div>
+      <div class="field-error" id="passErr">Password must be at least 6 characters</div>
+    </div>
+
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔑</span>
+        <input type="password" id="confirmPass" placeholder="Re-enter password">
+      </div>
+      <div class="field-error" id="confirmErr">Passwords do not match</div>
+    </div>
+
+    <button class="btn" onclick="register()">Create Account</button>
+
+    <hr class="divider">
+    <div class="login-link">Already have an account? <a onclick="goToLogin()">Sign in</a></div>
+  </div>
+
+  <!-- SUCCESS VIEW -->
+  <div class="success-box" id="successView">
+    <div class="success-icon">🎉</div>
+    <h2>You're all set!</h2>
+    <p>Account created successfully. Head to login to start tracking your subscriptions.</p>
+    <button class="btn" onclick="goToLogin()">Go to Login →</button>
+  </div>
+</div>
+
+<script>
+async function register() {
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!name || !email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    alert("Registration successful!");
+
+    // redirect to login
+    window.location.href = '/login.html';
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error. Check backend.");
+  }
+}
+</script>
+
+</body>
+</html>

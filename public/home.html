@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubTrack — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060912;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --accent: #6ee7f7;
+    --accent2: #818cf8;
+    --accent3: #34d399;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --text: #f1f5f9;
+    --muted: #64748b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 300px;
+    background: linear-gradient(180deg, rgba(110,231,247,0.06) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* NAVBAR */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(6,9,18,0.85);
+    backdrop-filter: blur(16px);
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .logo-text {
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .welcome-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .welcome-text span {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .btn-logout {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 24px;
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    display: none;
+    background: rgba(251,191,36,0.1);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 0.85rem;
+    color: var(--warn);
+    animation: slideDown 0.4s ease;
+  }
+
+  .alert-banner.show { display: flex; align-items: flex-start; gap: 10px; }
+
+  .alert-banner .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .alert-items { list-style: none; }
+  .alert-items li { margin-top: 4px; font-size: 0.82rem; color: rgba(251,191,36,0.8); }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* STAT CARDS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.05s; }
+  .stat-card:nth-child(2) { animation-delay: 0.1s; }
+  .stat-card:nth-child(3) { animation-delay: 0.15s; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stat-card:nth-child(1) .stat-value { color: var(--accent); }
+  .stat-card:nth-child(2) .stat-value { color: var(--accent2); }
+  .stat-card:nth-child(3) .stat-value { color: var(--accent3); }
+
+  .stat-sub {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .btn-add {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #060912;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .btn-add:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+  tbody td {
+    padding: 14px 18px;
+    font-size: 0.88rem;
+  }
+
+  .sub-name {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .badge-ok { background: rgba(52,211,153,0.12); color: var(--accent3); }
+  .badge-warn { background: rgba(251,191,36,0.12); color: var(--warn); }
+  .badge-danger { background: rgba(248,113,113,0.12); color: var(--danger); }
+
+  .cost-cell { font-family: 'JetBrains Mono', monospace; color: var(--accent); }
+
+  .btn-delete {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+
+  .btn-delete:hover {
+    border-color: rgba(248,113,113,0.3);
+    color: var(--danger);
+    background: rgba(248,113,113,0.07);
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+  .empty-state h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .empty-state p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🔔</div>
+    <div class="logo-text">SubTrack</div>
+  </div>
+  <div class="nav-right">
+    <div class="welcome-text">Hello, <span id="username">User</span></div>
+    <button class="btn-logout" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner" id="alertBanner">
+    <span class="alert-icon">⚠️</span>
+    <div>
+      <strong>Renewal Alert</strong> — The following subscriptions expire soon:
+      <ul class="alert-items" id="alertList"></ul>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Monthly Cost</div>
+      <div class="stat-value" id="totalCost">₹0</div>
+      <div class="stat-sub">Total across all subs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Subscriptions</div>
+      <div class="stat-value" id="totalSubs">0</div>
+      <div class="stat-sub">Services tracked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Expiring Soon</div>
+      <div class="stat-value" id="expiringSoon">0</div>
+      <div class="stat-sub">Within next 7 days</div>
+    </div>
+  </div>
+
+  <!-- SUBSCRIPTION LIST -->
+  <div class="section-header">
+    <div class="section-title">Your Subscriptions</div>
+    <button class="btn-add" onclick="window.location.href='add-subscription.html'">+ Add Subscription</button>
+  </div>
+  <div style="display:flex; gap:10px; margin-bottom:16px;">
+  <input type="text" id="search" placeholder="Search subscriptions..." 
+         onkeyup="searchSubs()" 
+         style="padding:8px 12px; border-radius:8px; border:none; outline:none;">
+
+  <select onchange="filterCategory(this.value)" 
+          style="padding:8px 12px; border-radius:8px;">
+    <option>All</option>
+    <option>OTT</option>
+    <option>Telecom</option>
+    <option>Utility</option>
+    <option>Other</option>
+  </select>
+</div>
+
+  <div class="table-wrap" id="tableWrap">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📭</div>
+      <h3>No subscriptions yet</h3>
+      <p>Start tracking your OTT platforms, mobile recharges, and more</p>
+      <button class="btn-add" onclick="window.location.href='add-subscription.html'" style="margin:0 auto">+ Add Your First Subscription</button>
+    </div>
+    <table id="subTable" style="display:none">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Cost / Month</th>
+          <th>Renewal Date</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="subBody"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<script>
+  // Auth check
+  const session = JSON.parse(localStorage.getItem('subtrack_session') || 'null');
+  if (!session) window.location.href = 'login.html';
+  else document.getElementById('username').textContent = session.name;
+
+  function getDaysLeft(renewalDate) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const renewal = new Date(renewalDate);
+    return Math.ceil((renewal - today) / (1000 * 60 * 60 * 24));
+  }
+  function knnPredict(current, allSubs, k = 3) {
+  // calculate distance
+  const distances = allSubs.map(sub => {
+    return {
+      label: sub.label || "useful",
+      dist: Math.sqrt(
+        ((current.cost - sub.cost)/100) ** 2 +
+        (current.usage - sub.usage) ** 2
+      )
+    };
+  });
+
+  // sort by closest
+  distances.sort((a, b) => a.dist - b.dist);
+
+  // pick top k
+  const topK = distances.slice(0, k);
+
+  // vote
+  let useful = 0, notUseful = 0;
+
+  topK.forEach(n => {
+    if (n.label === "useful") useful++;
+    else notUseful++;
+  });
+
+  return useful >= notUseful ? "Keep" : "Cancel";
+}
+
+  async function renderDashboard() {
+  const session = JSON.parse(localStorage.getItem('subtrack_session'));
+  const res = await fetch(`/api/subscriptions/${session.email}`);
+  const subs = await res.json();
+
+  const body = document.getElementById('subBody');
+  const alertList = document.getElementById('alertList');
+
+  body.innerHTML = '';
+  alertList.innerHTML = '';
+
+  if (subs.length === 0) {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('subTable').style.display = 'none';
+  } else {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('subTable').style.display = 'table';
+  }
+
+  let total = 0;
+  let expiring7 = 0;
+  const urgentAlerts = [];
+
+  subs.forEach((sub, index) => {
+  const days = getDaysLeft(sub.renewalDate);
+  total += parseFloat(sub.cost);
+
+  if (days <= 7 && days >= 0) expiring7++;
+
+  // ✅ FIXED LOGIC
+  const prediction = subs.length < 3
+    ? (sub.usage < 3 ? "Cancel" : "Keep")
+    : knnPredict(sub, subs);
+
+  let suggestion = "";
+  if (prediction === "Cancel") {
+    suggestion = "⚠️ Cancel Recommended";
+  } else {
+    suggestion = "✅ Worth Keeping";
+  }
+
+  const tr = document.createElement('tr');
+  tr.style.animationDelay = (index * 0.05) + 's';
+
+  tr.innerHTML = `
+    <td><div class="sub-name">📦 ${sub.name}</div></td>
+    <td class="cost-cell">₹${parseFloat(sub.cost).toFixed(2)}</td>
+    <td>${sub.category || "Other"}</td>
+    <td>${new Date(sub.renewalDate).toLocaleDateString('en-IN')}</td>
+    <td>${sub.status || "pending"}</td>
+    <td>${suggestion}</td>
+    <td>
+      <button onclick="markPaid('${sub._id}')">Paid</button>
+      <button onclick="deleteSub('${sub._id}')">Delete</button>
+    </td>
+  `;
+
+  body.appendChild(tr);
+
+  if (days <= 3 && days >= 0) {
+    urgentAlerts.push(`${sub.name} — ${days === 0 ? 'expires TODAY' : days + ' day(s) left'}`);
+  }
+});
+
+  // ✅ STATS OUTSIDE LOOP
+  document.getElementById('totalCost').textContent = '₹' + total.toFixed(0);
+  document.getElementById('totalSubs').textContent = subs.length;
+  document.getElementById('expiringSoon').textContent = expiring7;
+
+  // ✅ ALERT UI
+  if (urgentAlerts.length > 0) {
+    urgentAlerts.forEach(a => {
+      const li = document.createElement('li');
+      li.textContent = '→ ' + a;
+      alertList.appendChild(li);
+    });
+    document.getElementById('alertBanner').classList.add('show');
+  } else {
+    document.getElementById('alertBanner').classList.remove('show');
+  }
+} // ✅ FUNCTION CLOSED
+  
+  function logout() {
+    localStorage.removeItem('subtrack_session');
+    window.location.href = 'login.html';
+  }
+  // DELETE
+async function deleteSub(id) {
+  await fetch(`/api/subscriptions/${id}`, { method: 'DELETE' });
+  renderDashboard();
+}
+
+// MARK AS PAID
+async function markPaid(id) {
+  await fetch(`/api/subscriptions/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'paid' })
+  });
+  renderDashboard();
+}
+
+// SEARCH
+function searchSubs() {
+  const val = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('#subBody tr').forEach(row => {
+    row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+  });
+}
+
+// FILTER
+function filterCategory(cat) {
+  document.querySelectorAll('#subBody tr').forEach(row => {
+    row.style.display =
+      cat === 'All' || row.children[2].innerText === cat ? '' : 'none';
+  });
+}
+
+  renderDashboard();
+</script>
+</body>
+</html>

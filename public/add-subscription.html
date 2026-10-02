@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubTrack — Add Subscription</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060912;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --accent: #6ee7f7;
+    --accent2: #818cf8;
+    --accent3: #34d399;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --input-bg: rgba(255,255,255,0.05);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 300px;
+    background: linear-gradient(180deg, rgba(129,140,248,0.07) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* NAVBAR */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(6,9,18,0.85);
+    backdrop-filter: blur(16px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .logo-text {
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .btn-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-back:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+  /* LAYOUT */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) {
+    main { grid-template-columns: 1fr; }
+  }
+
+  /* FORM CARD */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    animation: slideUp 0.4s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .card-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* QUICK PRESETS */
+  .presets-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  .presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .preset-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .preset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(110,231,247,0.06);
+  }
+
+  .form-group { margin-bottom: 18px; }
+
+  label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .input-wrap { position: relative; }
+
+  .input-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  input, select {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 13px 12px 38px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--accent);
+    background: rgba(110,231,247,0.04);
+  }
+
+  input.error { border-color: var(--danger); }
+
+  select option { background: #111827; color: var(--text); }
+
+  .field-error {
+    font-size: 0.73rem;
+    color: var(--danger);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 5px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+
+  /* Renewal alert preview */
+  .renewal-preview {
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: var(--warn);
+    margin-top: 8px;
+    display: none;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .renewal-preview.show { display: block; }
+  .renewal-preview.danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.2); color: var(--danger); }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #060912;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* SUCCESS TOAST */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: rgba(52,211,153,0.15);
+    border: 1px solid rgba(52,211,153,0.35);
+    border-radius: 12px;
+    padding: 14px 20px;
+    color: var(--accent3);
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 999;
+    animation: toastIn 0.3s ease;
+  }
+
+  .toast.show { display: flex; }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RIGHT COLUMN: Subscription Table */
+  .list-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: slideUp 0.4s ease 0.1s both;
+  }
+
+  .list-header {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .list-header-title { font-size: 0.95rem; font-weight: 700; }
+
+  .total-pill {
+    background: rgba(110,231,247,0.1);
+    border: 1px solid rgba(110,231,247,0.2);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+  }
+
+  .list-empty {
+    text-align: center;
+    padding: 40px 16px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .list-empty .ei { font-size: 2rem; margin-bottom: 8px; }
+
+  .sub-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 22px;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.3s ease both;
+    gap: 10px;
+  }
+
+  .sub-item:last-child { border-bottom: none; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .sub-info .sub-name-list {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .sub-info .sub-date {
+    font-size: 0.73rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .sub-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .sub-cost {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.67rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .badge-ok { background: rgba(52,211,153,0.12); color: var(--accent3); }
+  .badge-warn { background: rgba(251,191,36,0.12); color: var(--warn); }
+  .badge-danger { background: rgba(248,113,113,0.12); color: var(--danger); }
+
+  .btn-del {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.2s;
+  }
+
+  .btn-del:hover { color: var(--danger); }
+
+  /* Alert within form if adding near-expiry date */
+  .date-alert {
+    display: none;
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: var(--danger);
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .date-alert.show { display: block; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🔔</div>
+    <div class="logo-text">SubTrack</div>
+  </div>
+  <button class="btn-back" onclick="window.location.href='home.html'">← Dashboard</button>
+</nav>
+
+<main>
+  <!-- LEFT: ADD FORM -->
+  <div class="form-card">
+    <div class="card-title">Add Subscription</div>
+    <div class="card-sub">Track a new OTT, mobile, or utility service</div>
+
+    <div class="presets-label">Quick Add</div>
+    <div class="presets">
+      <button class="preset-btn" onclick="fillPreset('Netflix', 649)">🎬 Netflix</button>
+      <button class="preset-btn" onclick="fillPreset('Amazon Prime', 299)">📦 Prime</button>
+      <button class="preset-btn" onclick="fillPreset('Hotstar', 299)">⭐ Hotstar</button>
+      <button class="preset-btn" onclick="fillPreset('Spotify', 119)">🎵 Spotify</button>
+      <button class="preset-btn" onclick="fillPreset('Jio Recharge', 349)">📱 Jio</button>
+      <button class="preset-btn" onclick="fillPreset('Airtel', 399)">📶 Airtel</button>
+    </div>
+
+    <div class="form-group">
+      <label>Subscription Name</label>
+      <div class="input-wrap">
+        <span class="input-icon">📋</span>
+        <input type="text" id="subName" placeholder="e.g. Netflix, Jio, Hotstar">
+      </div>
+      <div class="field-error" id="nameErr">Subscription name is required</div>
+    </div>
+
+    <div class="form-group">
+      <label>Monthly Cost (₹)</label>
+      <div class="input-wrap">
+        <span class="input-icon">💰</span>
+        <input type="number" id="cost" placeholder="e.g. 649" min="0" step="0.01">
+      </div>
+      <div class="field-error" id="costErr">Enter a valid cost</div>
+    </div>
+
+    <div class="form-group">
+      <label>Renewal Date</label>
+      <div class="input-wrap">
+        <span class="input-icon">📅</span>
+        <input type="date" id="renewalDate" onchange="checkDateAlert()">
+      </div>
+      <div class="field-error" id="dateErr">Select a renewal date</div>
+      <div class="date-alert" id="dateAlert">⚠️ This renewal is within 3 days — you'll get an alert on the dashboard!</div>
+    </div>
+    <div class="form-group">
+  <label>Category</label>
+  <div class="input-wrap">
+    <span class="input-icon">📂</span>
+    <select id="category">
+      <option>OTT</option>
+      <option>Telecom</option>
+      <option>Utility</option>
+      <option>Other</option>
+    </select>
+  </div>
+</div>
+<div class="form-group">
+  <label>Usage (times per month)</label>
+  <div class="input-wrap">
+    <span class="input-icon">📊</span>
+    <input type="number" id="usage" placeholder="e.g. 5">
+  </div>
+</div>
+
+    <button id="addBtn" class="btn-submit" onclick="addSubscription()">+ Add Subscription</button>
+  </div>
+  
+
+
+
+  <!-- RIGHT: LIST -->
+  <div class="list-card">
+    <div class="list-header">
+      <div class="list-header-title">All Subscriptions</div>
+      <div class="total-pill" id="totalPill">Total: ₹0/mo</div>
+    </div>
+    <div id="listContainer">
+      <div class="list-empty" id="listEmpty">
+        <div class="ei">📭</div>
+        No subscriptions yet. Add one!
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Subscription added!</div>
+
+<script>
+if (!localStorage.getItem('subtrack_session')) {
+  window.location.href = '/login.html';
+}
+
+document.getElementById('renewalDate').min =
+  new Date().toISOString().split('T')[0];
+
+function fillPreset(name, cost) {
+  document.getElementById('subName').value = name;
+  document.getElementById('cost').value = cost;
+}
+
+// ✅ ONLY THIS FUNCTION
+async function addSubscription() {
+  const name = document.getElementById('subName').value.trim();
+  const cost = document.getElementById('cost').value;
+  const renewalDate = document.getElementById('renewalDate').value;
+  const category = document.getElementById('category').value;
+  const usage = document.getElementById('usage').value;
+
+  const session = JSON.parse(localStorage.getItem('subtrack_session'));
+
+  if (!name || !cost || !renewalDate) {
+    alert("Fill all fields");
+    return;
+  }
+
+  await fetch('/api/subscriptions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+    userEmail: session.email,
+    name,
+    cost,
+    renewalDate,
+    category,
+    usage,
+    status: "pending",
+    label: usage >= 5 ? "useful" : "not_useful"
+    })
+  });
+
+  alert("Subscription added!");
+
+  window.location.href = '/home.html';
+}
+</script>
+</body>
+</html>
