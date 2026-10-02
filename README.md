@@ -1,37 +1,31 @@
 # SubTrack — Subscription Manager
 
-A full-stack subscription tracking app. Users can register, log in, and manage their recurring subscriptions (add, view, update status, delete) from a dashboard.
+A full-stack subscription tracker. Register, log in, and manage recurring subscriptions from a dashboard — see total monthly cost, upcoming renewals, and mark subscriptions as paid or delete them.
+
+## Screenshots
+
+**Login**
+<img width="1280" height="740" alt="testproj-login" src="https://github.com/user-attachments/assets/c474c1c0-71ab-4405-b476-6f04089583f5" />
+
+**Dashboard**
+<img width="1280" height="900" alt="testproj-home" src="https://github.com/user-attachments/assets/6d110bbb-20ab-44f8-83bc-990303d421bd" />
 
 ## Tech Stack
 
-- **Backend:** Node.js, Express, Mongoose (MongoDB)
-- **Frontend:** Static HTML/CSS/JS (login, register, home dashboard, add-subscription pages)
+Node.js, Express, Mongoose (MongoDB) · HTML/CSS/JS frontend
 
 ## Features
 
-- User registration and login
-- Add a subscription (name, cost, renewal date, category)
-- View all subscriptions for the logged-in user
-- Update subscription status
-- Delete a subscription
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | /api/register | Create a new user |
-| POST | /api/login | Authenticate a user |
-| POST | /api/subscriptions | Add a subscription |
-| GET | /api/subscriptions/:email | Get subscriptions for a user |
-| PUT | /api/subscriptions/:id | Update a subscription |
-| DELETE | /api/subscriptions/:id | Delete a subscription |
+- Register / login
+- Add, view, and delete subscriptions
+- Monthly cost, active count, and "expiring soon" stats
+- Category filtering
 
 ## Setup
 
 ```bash
 npm install
-# Make sure MongoDB is running locally on mongodb://127.0.0.1:27017
 node server.js
 ```
 
-The app serves the frontend from /public and listens on http://localhost:3000.
+Visit `http://localhost:3000/login.html`. Requires MongoDB running locally (`mongodb://127.0.0.1:27017/subtrack`).
